@@ -5,13 +5,13 @@
 Summary:	The Mantis bug tracker
 Summary(pl):	Mantis - system kontroli b³êdów
 Name:		mantis
-%define		sub_ver rc1
+# %%define		sub_ver rc1
 Version:	0.19.0
-Release:	0.%{sub_ver}.1
+Release:	1
 License:	GPL
 Group:		Development/Tools
-Source0:	http://dl.sourceforge.net/mantisbt/%{name}-%{version}%{sub_ver}.tar.gz
-# Source0-md5:	b3ac5f90999c6c2189a32b2fe38e8eff
+Source0:	http://dl.sourceforge.net/mantisbt/%{name}-%{version}.tar.gz
+# Source0-md5:	c69b3ac96db05f12dd5ca4158bd60bf3
 Source1:	%{name}-doc-PLD.tar.gz
 Source2:	%{name}.conf
 URL:		http://mantisbt.sourceforge.net/
@@ -38,6 +38,7 @@ bazie MySQL oraz PHP.
 %prep
 %setup -q -c -a1
 find . -type d -name CVS | xargs rm -rf
+find . -type f -name .cvsignore | xargs rm -rf
 
 %build
 
@@ -45,10 +46,10 @@ find . -type d -name CVS | xargs rm -rf
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_mantisdir}/doc,%{_sysconfdir}/httpd}
 
-cp -af mantis-%{version}%{sub_ver}/{*.php,admin,core,css,graphs,images,javascript,lang,sql} $RPM_BUILD_ROOT%{_mantisdir}
-cp -af mantis-%{version}%{sub_ver}/doc/faq.* $RPM_BUILD_ROOT%{_mantisdir}/doc/
+cp -af mantis-%{version}/{*.php,admin,core,css,graphs,images,javascript,lang,sql} $RPM_BUILD_ROOT%{_mantisdir}
+# cp -af mantis-%{version}/doc/faq.* $RPM_BUILD_ROOT%{_mantisdir}/doc/
 
-sed -e 's/root/mysql/g' mantis-%{version}%{sub_ver}/config_inc.php.sample > $RPM_BUILD_ROOT%{_mantisdir}/config_inc.php
+sed -e 's/root/mysql/g' mantis-%{version}/config_inc.php.sample > $RPM_BUILD_ROOT%{_mantisdir}/config_inc.php
 
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/httpd/%{name}.conf
 
@@ -96,7 +97,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc mantis-%{version}%{sub_ver}/doc/{CREDITS,CUSTOMIZATION,ChangeLog,INSTALL,README,TROUBLESHOOTING,UPGRADING}
+%doc mantis-%{version}/doc/{CREDITS,CUSTOMIZATION,ChangeLog,INSTALL,README,UPGRADING}
 %doc PLD*
 %dir %{_mantisdir}
 %{_mantisdir}/admin
