@@ -1,15 +1,17 @@
-# TODO:
-# - SECURITY: http://securitytracker.com/alerts/2004/Aug/1011051.html
-# - SECURITY: http://securitytracker.com/alerts/2004/Aug/1011015.html
+#
+# tip:
+# After upgrade from version <= 0.18.x mysql database requires upgrade!
+
 Summary:	The Mantis bug tracker
 Summary(pl):	Mantis - system kontroli b³êdów
 Name:		mantis
-Version:	0.18.3
-Release:	2
+%define		sub_ver rc1
+Version:	0.19.0
+Release:	0.%{sub_ver}.1
 License:	GPL
 Group:		Development/Tools
-Source0:	http://dl.sourceforge.net/mantisbt/mantisbt-%{version}.tar.gz
-# Source0-md5:	a0695e6d562778f8728d8f7ac963d8dd
+Source0:	http://dl.sourceforge.net/mantisbt/%{name}-%{version}%{sub_ver}.tar.gz
+# Source0-md5:	b3ac5f90999c6c2189a32b2fe38e8eff
 Source1:	%{name}-doc-PLD.tar.gz
 Source2:	%{name}.conf
 URL:		http://mantisbt.sourceforge.net/
@@ -43,10 +45,10 @@ find . -type d -name CVS | xargs rm -rf
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_mantisdir}/doc,%{_sysconfdir}/httpd}
 
-cp -af mantisbt-%{version}/{*.php,admin,core,css,graphs,images,lang,sql} $RPM_BUILD_ROOT%{_mantisdir}
-cp -af mantisbt-%{version}/doc/{documentation.*,faq.*} $RPM_BUILD_ROOT%{_mantisdir}/doc/
+cp -af mantis-%{version}%{sub_ver}/{*.php,admin,core,css,graphs,images,javascript,lang,sql} $RPM_BUILD_ROOT%{_mantisdir}
+cp -af mantis-%{version}%{sub_ver}/doc/faq.* $RPM_BUILD_ROOT%{_mantisdir}/doc/
 
-sed -e 's/root/mysql/g' mantisbt-%{version}/config_inc.php.sample > $RPM_BUILD_ROOT%{_mantisdir}/config_inc.php
+sed -e 's/root/mysql/g' mantis-%{version}%{sub_ver}/config_inc.php.sample > $RPM_BUILD_ROOT%{_mantisdir}/config_inc.php
 
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/httpd/%{name}.conf
 
@@ -94,7 +96,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc mantisbt-%{version}/doc/{CREDITS,CUSTOMIZATION,ChangeLog,INSTALL,README,TROUBLESHOOTING,UPGRADING}
+%doc mantis-%{version}%{sub_ver}/doc/{CREDITS,CUSTOMIZATION,ChangeLog,INSTALL,README,TROUBLESHOOTING,UPGRADING}
 %doc PLD*
 %dir %{_mantisdir}
 %{_mantisdir}/admin
@@ -102,27 +104,32 @@ fi
 %{_mantisdir}/css
 %{_mantisdir}/graphs
 %{_mantisdir}/images
+%{_mantisdir}/javascript
 %{_mantisdir}/lang
 %{_mantisdir}/sql
 %{_mantisdir}/doc
 %{_mantisdir}/account*
 %{_mantisdir}/bug*
+%{_mantisdir}/changelog_page*
 %{_mantisdir}/core.*
 %{_mantisdir}/csv*
-%{_mantisdir}/docum*
+%{_mantisdir}/file_down*
 %{_mantisdir}/file*
 %{_mantisdir}/history*
 %{_mantisdir}/index*
 %{_mantisdir}/jump*
-%{_mantisdir}/log*
+%{_mantisdir}/lo*
 %{_mantisdir}/ma*
 %{_mantisdir}/me*
+%{_mantisdir}/my*
 %{_mantisdir}/news*
 %{_mantisdir}/print*
 %{_mantisdir}/proj*
+%{_mantisdir}/query*
 %{_mantisdir}/set*
 %{_mantisdir}/sig*
 %{_mantisdir}/sum*
+%{_mantisdir}/veri*
 %{_mantisdir}/view*
 
 %config(noreplace) %{_mantisdir}/config_inc.php
