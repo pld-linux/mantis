@@ -2,13 +2,13 @@
 Summary:	The Mantis Bug Tracker
 Summary(pl):	Mantis - System Kontroli B³êdów
 Name:		mantis
-Version:	0.18.0a4
-# define	_alpha a4
-Release:	1
+Version:	0.18.0
+%define		sub_ver rc1
+Release:	0.%{sub_ver}.1
 License:	GPL
 Group:		Development/Tools
-Source0:	http://dl.sourceforge.net/mantisbt/%{name}-%{version}.tar.gz
-# Source0-md5:	4c730c1ecf7a2449ef915387d85c1952
+Source0:	http://dl.sourceforge.net/mantisbt/%{name}-%{version}%{sub_ver}.gz
+# Source0-md5:	e3ae5c6ba4e3ba33fcefdfb63391c99b
 Source1:	%{name}-doc-PLD.tar.gz
 URL:		http://mantisbt.sourceforge.net/
 Requires:	apache >= 1.3.27-4
@@ -34,16 +34,19 @@ Mantis jest systemem kontroli b³êdów opartym na interfejsie WWW i
 bazie MySQL.
 
 %prep
-%setup -q -a1
+%setup -q -a1 -c
+
+%build
+mkdir docs
+mv -f *.txt docs
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_mantisdir}
+mv -f %{name}-%{version}%{sub_ver}/doc docs
+cp -af %{name}-%{version}%{sub_ver}/{*.php,admin,core,css,graphs,images,lang,sql} $RPM_BUILD_ROOT%{_mantisdir}
 
-cp -af *.php admin core css graphs images lang sql $RPM_BUILD_ROOT%{_mantisdir}
-
-sed -e 's/root/mysql/g' config_inc.php.sample > \
-	$RPM_BUILD_ROOT%{_mantisdir}/config_inc.php
+sed -e 's/root/mysql/g' %{name}-%{version}%{sub_ver}/config_inc.php.sample > $RPM_BUILD_ROOT%{_mantisdir}/config_inc.php
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -65,7 +68,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc doc/* PLD_Install_PL.txt PLD_Install_EN.txt config_inc.php.sample
+%doc docs/*
 %dir %{_mantisdir}
 %{_mantisdir}/admin/
 %{_mantisdir}/core/
@@ -96,4 +99,3 @@ fi
 
 %config(noreplace) %{_mantisdir}/config_inc.php
 %config(noreplace) %{_mantisdir}/config_defaults_inc.php
-%exclude %{_mantisdir}/core/.cvsignore
