@@ -1,7 +1,6 @@
 # TODO:
 # - see preun
-# - config_inc.php and config_defaults_inc.php must be marked as %config
-# - *.sample can go to %doc instead of %{_mantisdir}
+
 Summary:	The Mantis Bug Tracker
 Summary(pl):	Mantis - System Kontroli B³êdów
 Name:		mantis
@@ -22,7 +21,7 @@ Requires:	php-pcre >= 4.3.1-4
 Requires:	php-common >= 4.3.1-4
 Requires:	mysql >= 3.23.2
 Requires:	mysql-client >= 3.23.56-1
-Requires(post):	sed
+Requires:	sed
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -30,7 +29,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 # define _mantisdir /home/httpd/html/mantis
 
 %description
-Mantis is a web- and MySQL-based bugtracking system.
+Mantis is a web-based bugtracking system.
 
 %description -l pl
 Mantis jest systemem kontroli b³êdów opartym na interfejsie WWW i
@@ -51,9 +50,12 @@ sed -e 's/root/mysql/g' config_inc.php.sample > \
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+
 # NOTE: this is wrong
 # LANG doesn't need to be set to get working locale
 # LANG=pl_PL doesn't mean that one wants pl messages
+# NOTE ciesiel:
+# please info how make this LANG problem? :-)
 %post
 if [ "$LANG" = "pl_PL" ]; then
     sed -e "s/= 'english';/= 'polish';/g" %{_mantisdir}/config_defaults_inc.php > %{_mantisdir}/config_defaults_inc_PLD.php
@@ -71,6 +73,35 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc doc/* PLD_Install_PL.txt PLD_Install_EN.txt
+%doc doc/* PLD_Install_PL.txt PLD_Install_EN.txt config_inc.php.sample
 %dir %{_mantisdir}
-%{_mantisdir}/*
+%{_mantisdir}/admin/
+%{_mantisdir}/core/
+%{_mantisdir}/css/
+%{_mantisdir}/graphs/
+%{_mantisdir}/images/
+%{_mantisdir}/lang/
+%{_mantisdir}/sql/
+%{_mantisdir}/account*
+%{_mantisdir}/bug*
+%{_mantisdir}/core.*
+%{_mantisdir}/csv*
+%{_mantisdir}/docum*
+%{_mantisdir}/file*
+%{_mantisdir}/history*
+%{_mantisdir}/index*
+%{_mantisdir}/jump*
+%{_mantisdir}/log*
+%{_mantisdir}/ma*
+%{_mantisdir}/me*
+%{_mantisdir}/news*
+%{_mantisdir}/print*
+%{_mantisdir}/proj*
+%{_mantisdir}/set*
+%{_mantisdir}/sig*
+%{_mantisdir}/sum*
+%{_mantisdir}/view*
+
+%config(noreplace) %{_mantisdir}/config_inc.php
+%config(noreplace) %{_mantisdir}/config_defaults_inc.php
+%exclude %{_mantisdir}/core/.cvsignore
