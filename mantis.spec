@@ -24,11 +24,11 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_mantisdir	%{_datadir}/%{name}
 
 %description
-Mantis is a web-based bugtracking system.
+Mantis is a PHP/MySQL/web based bugtracking system.
 
 %description -l pl
-Mantis jest systemem kontroli b³êdów opartym na interfejsie WWW i
-bazie MySQL.
+Mantis jest systemem kontroli b³êdów opartym na interfejsie WWW,
+bazie MySQL oraz PHP.
 
 %prep
 %setup -q -c -a1
@@ -40,14 +40,14 @@ find . -type d -name CVS | xargs rm -rf
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_mantisdir}
 install -d $RPM_BUILD_ROOT%{_mantisdir}/doc/
-install -d $RPM_BUILD_ROOT/etc/httpd/
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/httpd/
 
 cp -af mantisbt-%{version}/{*.php,admin,core,css,graphs,images,lang,sql} $RPM_BUILD_ROOT%{_mantisdir}
 cp -af mantisbt-%{version}/doc/{documentation.*,faq.*} $RPM_BUILD_ROOT%{_mantisdir}/doc/
 
 sed -e 's/root/mysql/g' mantisbt-%{version}/config_inc.php.sample > $RPM_BUILD_ROOT%{_mantisdir}/config_inc.php
 
-install %{SOURCE2} $RPM_BUILD_ROOT/etc/httpd/%{name}.conf
+install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/httpd/%{name}.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -67,10 +67,10 @@ else
 	echo
 fi
 
-if [ -f /etc/httpd/httpd.conf ] && ! grep -q "^Include.*%{name}.conf" /etc/httpd/httpd.conf; then
-        echo "Include /etc/httpd/%{name}.conf" >> /etc/httpd/httpd.conf
-elif [ -d /etc/httpd/httpd.conf ]; then
-        ln -sf /etc/httpd/%{name}.conf /etc/httpd/httpd.conf/99_%{name}.conf
+if [ -f %{_sysconfdir}/httpd/httpd.conf ] && ! grep -q "^Include.*%{name}.conf" %{_sysconfdir}/httpd/httpd.conf; then
+        echo "Include %{_sysconfdir}/httpd/%{name}.conf" >> %{_sysconfdir}/httpd/httpd.conf
+elif [ -d %{_sysconfdir}/httpd/httpd.conf ]; then
+        ln -sf %{_sysconfdir}/httpd/%{name}.conf %{_sysconfdir}/httpd/httpd.conf/99_%{name}.conf
 fi
 if [ -f /var/lock/subsys/httpd ]; then
         /usr/sbin/apachectl restart 1>&2
@@ -79,12 +79,12 @@ fi
 %preun
 if [ "$1" = "0" ]; then
         umask 027
-        if [ -d /etc/httpd/httpd.conf ]; then
-            rm -f /etc/httpd/httpd.conf/99_%{name}.conf
+        if [ -d %{_sysconfdir}/httpd/httpd.conf ]; then
+            rm -f %{_sysconfdir}/httpd/httpd.conf/99_%{name}.conf
         else
-                grep -v "^Include.*%{name}.conf" /etc/httpd/httpd.conf > \
-                        /etc/httpd/httpd.conf.tmp
-                mv -f /etc/httpd/httpd.conf.tmp /etc/httpd/httpd.conf
+                grep -v "^Include.*%{name}.conf" %{_sysconfdir}/httpd/httpd.conf > \
+                        %{_sysconfdir}/httpd/httpd.conf.tmp
+                mv -f %{_sysconfdir}/httpd/httpd.conf.tmp %{_sysconfdir}/httpd/httpd.conf
                 if [ -f /var/lock/subsys/httpd ]; then
                     /usr/sbin/apachectl restart 1>&2
                 fi
@@ -126,4 +126,4 @@ fi
 
 %config(noreplace) %{_mantisdir}/config_inc.php
 %config(noreplace) %{_mantisdir}/config_defaults_inc.php
-%config(noreplace) %verify(not size mtime md5) /etc/httpd/%{name}.conf
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/httpd/%{name}.conf
