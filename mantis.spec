@@ -1,5 +1,5 @@
-Summary:	The Mantis Bug Tracker
-Summary(pl):	Mantis - System Kontroli B³êdów
+Summary:	The Mantis bug tracker
+Summary(pl):	Mantis - system kontroli b³êdów
 Name:		mantis
 Version:	0.18.3
 Release:	1
@@ -20,8 +20,8 @@ Requires:	sed
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define _mantisdir /home/services/httpd/html/mantis
-# define _mantisdir /home/httpd/html/mantis
+%define		_mantisdir	/home/services/httpd/html/mantis
+# define	_mantisdir	/home/httpd/html/mantis
 
 %description
 Mantis is a web-based bugtracking system.
@@ -51,17 +51,17 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 if [ "$LANG" = "pl_PL" ]; then
-#    sed -e "s/= 'english';/= 'polish';/g" %{_mantisdir}/config_defaults_inc.php > %{_mantisdir}/config_defaults_inc_PLD.php
-#    mv -f %{_mantisdir}/config_defaults_inc_PLD.php %{_mantisdir}/config_defaults_inc.php
-    echo
-    echo "Mantis zapisany..."
-    echo "Wiêcej: /usr/share/doc/mantis-%{version}/PLD_Install_PL.txt.gz"
-    echo
+#	sed -e "s/= 'english';/= 'polish';/g" %{_mantisdir}/config_defaults_inc.php > %{_mantisdir}/config_defaults_inc_PLD.php
+#	mv -f %{_mantisdir}/config_defaults_inc_PLD.php %{_mantisdir}/config_defaults_inc.php
+	echo
+	echo "Mantis zapisany..."
+	echo "Wiêcej: /usr/share/doc/mantis-%{version}/PLD_Install_PL.txt.gz"
+	echo
 else
-    echo
-    echo "Mantis loaded..."
-    echo "More: /usr/share/doc/mantis-%{version}/PLD_Install_EN.txt.gz"
-    echo
+	echo
+	echo "Mantis loaded..."
+	echo "More: /usr/share/doc/mantis-%{version}/PLD_Install_EN.txt.gz"
+	echo
 fi
 
 %files
