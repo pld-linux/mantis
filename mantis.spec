@@ -2,7 +2,7 @@ Summary:	The Mantis Bug Tracker
 Summary(pl):	Mantis - System Kontroli B³êdów
 Name:		mantis
 Version:	0.18.2
-Release:	2
+Release:	3
 License:	GPL
 Group:		Development/Tools
 Source0:	http://dl.sourceforge.net/mantisbt/%{name}-%{version}.tar.gz
@@ -20,7 +20,7 @@ Requires:	sed
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define _mantisdir /home/services/httpd/mantis
+%define _mantisdir /home/services/httpd/html/mantis
 # define _mantisdir /home/httpd/html/mantis
 
 %description
