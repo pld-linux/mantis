@@ -2,13 +2,11 @@ Summary:	The Mantis Bug Tracker
 Summary(pl):	Mantis - System Kontroli B³êdów
 Name:		mantis
 Version:	0.18.0
-%define		sub_ver rc1
-Release:	0.%{sub_ver}.1
-Epoch:		1
+Release:	1
 License:	GPL
 Group:		Development/Tools
-Source0:	http://dl.sourceforge.net/mantisbt/%{name}-%{version}%{sub_ver}.gz
-# Source0-md5:	e3ae5c6ba4e3ba33fcefdfb63391c99b
+Source0:	http://dl.sourceforge.net/mantisbt/%{name}-%{version}.tar.gz
+# Source0-md5:	0a5dff3c2d49f80619804a9c47aaef7d
 Source1:	%{name}-doc-PLD.tar.gz
 URL:		http://mantisbt.sourceforge.net/
 Requires:	apache >= 1.3.27-4
@@ -34,6 +32,7 @@ bazie MySQL.
 
 %prep
 %setup -q -c -a1
+find . -type d -name CVS | xargs rm -rf
 
 %build
 install -d docs
@@ -42,10 +41,10 @@ mv -f *.txt docs
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_mantisdir}
-mv -f %{name}-%{version}%{sub_ver}/doc docs
-cp -af %{name}-%{version}%{sub_ver}/{*.php,admin,core,css,graphs,images,lang,sql} $RPM_BUILD_ROOT%{_mantisdir}
+mv -f %{name}-%{version}/doc docs
+cp -af %{name}-%{version}/{*.php,admin,core,css,graphs,images,lang,sql} $RPM_BUILD_ROOT%{_mantisdir}
 
-sed -e 's/root/mysql/g' %{name}-%{version}%{sub_ver}/config_inc.php.sample > $RPM_BUILD_ROOT%{_mantisdir}/config_inc.php
+sed -e 's/root/mysql/g' %{name}-%{version}/config_inc.php.sample > $RPM_BUILD_ROOT%{_mantisdir}/config_inc.php
 
 %clean
 rm -rf $RPM_BUILD_ROOT
