@@ -2,12 +2,13 @@ Summary:	The Mantis bug tracker
 Summary(pl):	Mantis - system kontroli b³êdów
 Name:		mantis
 Version:	0.18.3
-Release:	1
+Release:	2
 License:	GPL
 Group:		Development/Tools
 Source0:	http://dl.sourceforge.net/mantisbt/mantisbt-%{version}.tar.gz
 # Source0-md5:	a0695e6d562778f8728d8f7ac963d8dd
 Source1:	%{name}-doc-PLD.tar.gz
+Source2:	%{name}.conf
 URL:		http://mantisbt.sourceforge.net/
 Requires:	apache >= 1.3.27-4
 Requires:	apache-mod_dir >= 1.3.27-4
@@ -20,8 +21,7 @@ Requires:	sed
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		_mantisdir	/home/services/httpd/html/mantis
-# define	_mantisdir	/home/httpd/html/mantis
+%define		_mantisdir	%{_datadir}/%{name}
 
 %description
 Mantis is a web-based bugtracking system.
@@ -40,11 +40,14 @@ find . -type d -name CVS | xargs rm -rf
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_mantisdir}
 install -d $RPM_BUILD_ROOT%{_mantisdir}/doc/
+install -d $RPM_BUILD_ROOT/etc/httpd/
 
 cp -af mantisbt-%{version}/{*.php,admin,core,css,graphs,images,lang,sql} $RPM_BUILD_ROOT%{_mantisdir}
 cp -af mantisbt-%{version}/doc/{documentation.*,faq.*} $RPM_BUILD_ROOT%{_mantisdir}/doc/
 
 sed -e 's/root/mysql/g' mantisbt-%{version}/config_inc.php.sample > $RPM_BUILD_ROOT%{_mantisdir}/config_inc.php
+
+install %{SOURCE2} $RPM_BUILD_ROOT/etc/httpd/%{name}.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -62,6 +65,30 @@ else
 	echo "Mantis loaded..."
 	echo "More: /usr/share/doc/mantis-%{version}/PLD_Install_EN.txt.gz"
 	echo
+fi
+
+if [ -f /etc/httpd/httpd.conf ] && ! grep -q "^Include.*%{name}.conf" /etc/httpd/httpd.conf; then
+        echo "Include /etc/httpd/%{name}.conf" >> /etc/httpd/httpd.conf
+elif [ -d /etc/httpd/httpd.conf ]; then
+        ln -sf /etc/httpd/%{name}.conf /etc/httpd/httpd.conf/99_%{name}.conf
+fi
+if [ -f /var/lock/subsys/httpd ]; then
+        /usr/sbin/apachectl restart 1>&2
+fi
+
+%preun
+if [ "$1" = "0" ]; then
+        umask 027
+        if [ -d /etc/httpd/httpd.conf ]; then
+            rm -f /etc/httpd/httpd.conf/99_%{name}.conf
+        else
+                grep -v "^Include.*%{name}.conf" /etc/httpd/httpd.conf > \
+                        /etc/httpd/httpd.conf.tmp
+                mv -f /etc/httpd/httpd.conf.tmp /etc/httpd/httpd.conf
+                if [ -f /var/lock/subsys/httpd ]; then
+                    /usr/sbin/apachectl restart 1>&2
+                fi
+        fi
 fi
 
 %files
@@ -99,3 +126,4 @@ fi
 
 %config(noreplace) %{_mantisdir}/config_inc.php
 %config(noreplace) %{_mantisdir}/config_defaults_inc.php
+%config(noreplace) %verify(not size mtime md5) /etc/httpd/%{name}.conf
