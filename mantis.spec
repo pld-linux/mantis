@@ -1,5 +1,6 @@
 # TODO:
 # - SECURITY: http://securitytracker.com/alerts/2004/Aug/1011051.html
+# - SECURITY: http://securitytracker.com/alerts/2004/Aug/1011015.html
 Summary:	The Mantis bug tracker
 Summary(pl):	Mantis - system kontroli b³êdów
 Name:		mantis
