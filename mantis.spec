@@ -2,7 +2,7 @@ Summary:	The Mantis Bug Tracker
 Summary(pl):	Mantis - System Kontroli B³êdów
 Name:		mantis
 Version:	0.18.2
-Release:	1
+Release:	2
 License:	GPL
 Group:		Development/Tools
 Source0:	http://dl.sourceforge.net/mantisbt/%{name}-%{version}.tar.gz
@@ -35,14 +35,14 @@ bazie MySQL.
 find . -type d -name CVS | xargs rm -rf
 
 %build
-install -d docs
-mv -f *.txt docs
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_mantisdir}
-mv -f %{name}-%{version}/doc docs
+install -d $RPM_BUILD_ROOT%{_mantisdir}/doc/
+
 cp -af %{name}-%{version}/{*.php,admin,core,css,graphs,images,lang,sql} $RPM_BUILD_ROOT%{_mantisdir}
+cp -af %{name}-%{version}/doc/{documentation.*,faq.*} $RPM_BUILD_ROOT%{_mantisdir}/doc/
 
 sed -e 's/root/mysql/g' %{name}-%{version}/config_inc.php.sample > $RPM_BUILD_ROOT%{_mantisdir}/config_inc.php
 
@@ -66,7 +66,8 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc docs/*
+%doc %{name}-%{version}/doc/{CREDITS,CUSTOMIZATION,ChangeLog,INSTALL,README,TROUBLESHOOTING,UPGRADING}
+%doc PLD*
 %dir %{_mantisdir}
 %{_mantisdir}/admin
 %{_mantisdir}/core
@@ -75,6 +76,7 @@ fi
 %{_mantisdir}/images
 %{_mantisdir}/lang
 %{_mantisdir}/sql
+%{_mantisdir}/doc
 %{_mantisdir}/account*
 %{_mantisdir}/bug*
 %{_mantisdir}/core.*
