@@ -6,12 +6,12 @@ Summary:	The Mantis bug tracker
 Summary(pl):	Mantis - system kontroli b³êdów
 Name:		mantis
 # %%define		sub_ver rc1
-Version:	0.19.0
+Version:	0.19.1
 Release:	1
 License:	GPL
 Group:		Development/Tools
 Source0:	http://dl.sourceforge.net/mantisbt/%{name}-%{version}.tar.gz
-# Source0-md5:	c69b3ac96db05f12dd5ca4158bd60bf3
+# Source0-md5:	4877b75d2ab8afdad3a09ae645aa7efc
 Source1:	%{name}-doc-PLD.tar.gz
 Source2:	%{name}.conf
 URL:		http://mantisbt.sourceforge.net/
@@ -109,6 +109,7 @@ fi
 %{_mantisdir}/lang
 %{_mantisdir}/sql
 %{_mantisdir}/doc
+%{_mantisdir}/adm_*
 %{_mantisdir}/account*
 %{_mantisdir}/bug*
 %{_mantisdir}/changelog_page*
