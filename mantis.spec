@@ -1,10 +1,10 @@
-
 Summary:	The Mantis Bug Tracker
 Summary(pl):	Mantis - System Kontroli B³êdów
 Name:		mantis
 Version:	0.18.0
 %define		sub_ver rc1
 Release:	0.%{sub_ver}.1
+Epoch:		1
 License:	GPL
 Group:		Development/Tools
 Source0:	http://dl.sourceforge.net/mantisbt/%{name}-%{version}%{sub_ver}.gz
@@ -13,10 +13,9 @@ Source1:	%{name}-doc-PLD.tar.gz
 URL:		http://mantisbt.sourceforge.net/
 Requires:	apache >= 1.3.27-4
 Requires:	apache-mod_dir >= 1.3.27-4
-Requires:	php >= 4.0.3
-Requires:	php-mysql >= 4.0.3
+Requires:	php >= 4.3.1-4
+Requires:	php-mysql >= 4.3.1-4
 Requires:	php-pcre >= 4.3.1-4
-Requires:	php-common >= 4.3.1-4
 Requires:	mysql >= 3.23.2
 Requires:	mysql-client >= 3.23.56-1
 Requires:	sed
@@ -34,10 +33,10 @@ Mantis jest systemem kontroli b³êdów opartym na interfejsie WWW i
 bazie MySQL.
 
 %prep
-%setup -q -a1 -c
+%setup -q -c -a1
 
 %build
-mkdir docs
+install -d docs
 mv -f *.txt docs
 
 %install
@@ -70,13 +69,13 @@ fi
 %defattr(644,root,root,755)
 %doc docs/*
 %dir %{_mantisdir}
-%{_mantisdir}/admin/
-%{_mantisdir}/core/
-%{_mantisdir}/css/
-%{_mantisdir}/graphs/
-%{_mantisdir}/images/
-%{_mantisdir}/lang/
-%{_mantisdir}/sql/
+%{_mantisdir}/admin
+%{_mantisdir}/core
+%{_mantisdir}/css
+%{_mantisdir}/graphs
+%{_mantisdir}/images
+%{_mantisdir}/lang
+%{_mantisdir}/sql
 %{_mantisdir}/account*
 %{_mantisdir}/bug*
 %{_mantisdir}/core.*
