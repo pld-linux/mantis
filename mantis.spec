@@ -1,5 +1,3 @@
-# TODO:
-# - see preun
 
 Summary:	The Mantis Bug Tracker
 Summary(pl):	Mantis - System Kontroli B³êdów
@@ -50,16 +48,10 @@ sed -e 's/root/mysql/g' config_inc.php.sample > \
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-
-# NOTE: this is wrong
-# LANG doesn't need to be set to get working locale
-# LANG=pl_PL doesn't mean that one wants pl messages
-# NOTE ciesiel:
-# please info how make this LANG problem? :-)
 %post
 if [ "$LANG" = "pl_PL" ]; then
-    sed -e "s/= 'english';/= 'polish';/g" %{_mantisdir}/config_defaults_inc.php > %{_mantisdir}/config_defaults_inc_PLD.php
-    mv -f %{_mantisdir}/config_defaults_inc_PLD.php %{_mantisdir}/config_defaults_inc.php
+#    sed -e "s/= 'english';/= 'polish';/g" %{_mantisdir}/config_defaults_inc.php > %{_mantisdir}/config_defaults_inc_PLD.php
+#    mv -f %{_mantisdir}/config_defaults_inc_PLD.php %{_mantisdir}/config_defaults_inc.php
     echo
     echo "Mantis zapisany..."
     echo "Wiêcej: /usr/share/doc/mantis-%{version}/PLD_Install_PL.txt.gz"
