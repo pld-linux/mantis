@@ -6,6 +6,7 @@ Summary:	The Mantis Bug Tracker
 Summary(pl):	Mantis - System Kontroli B³êdów
 Name:		mantis
 Version:	0.18.0a4
+# define	_alpha a4
 Release:	1
 License:	GPL
 Group:		Development/Tools
@@ -21,7 +22,7 @@ Requires:	php-pcre >= 4.3.1-4
 Requires:	php-common >= 4.3.1-4
 Requires:	mysql >= 3.23.2
 Requires:	mysql-client >= 3.23.56-1
-Requires:	sed
+Requires(post):	sed
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -29,7 +30,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 # define _mantisdir /home/httpd/html/mantis
 
 %description
-Mantis is a web-based bugtracking system.
+Mantis is a web- and MySQL-based bugtracking system.
 
 %description -l pl
 Mantis jest systemem kontroli b³êdów opartym na interfejsie WWW i
@@ -42,7 +43,7 @@ bazie MySQL.
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_mantisdir}
 
-cp -af *.php *.sample admin core css graphs images lang sql $RPM_BUILD_ROOT%{_mantisdir}
+cp -af *.php admin core css graphs images lang sql $RPM_BUILD_ROOT%{_mantisdir}
 
 sed -e 's/root/mysql/g' config_inc.php.sample > \
 	$RPM_BUILD_ROOT%{_mantisdir}/config_inc.php
