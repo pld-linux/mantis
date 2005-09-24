@@ -1,0 +1,66 @@
+--- ./PLD_Install_EN.txt~	2004-08-20 09:46:00.000000000 +0300
++++ ./PLD_Install_EN.txt	2005-09-24 16:32:56.000000000 +0300
+@@ -1,19 +1,10 @@
+ Quick install - PLD
+ 
+-1) Create user 'mysql' in mysql (if necessary):
+-    # cd /etc/rc.d/init.d
+-    # ./mysql init
+-    # /usr/bin/mysqladmin -u mysql password 'password'
+-    
+-1a) Create database bugtracker:
+-    # /usr/bin/mysqladmin -umysql -ppassword create bugtracker
+-    # cd /usr/share/mantis/sql
+-    # mysql -umysql -ppassword bugtracker < db_generate.sql
+-
+-WARNING: After create user and database in mysql clean logfile (eg. sh: file .history)    
+-because include password mysql!
++1) Create database bugtracker:
++    # mysqladmin -umysql -p create mantis
++    # mysql -umysql -p mantis < /usr/share/mantis/sql/db_generate.sql
+ 
+-2) Correct file /usr/share/mantis/config_inc.php
++2) Edit file /etc/mantis/config.php
+ 
+ 3) Check configuration:
+     http://<domain>/mantis/admin/check.php
+--- ./PLD_Install_EN.txt~	2005-09-24 16:32:56.000000000 +0300
++++ ./PLD_Install_EN.txt	2005-09-24 16:34:12.000000000 +0300
+@@ -4,7 +4,8 @@
+     # mysqladmin -umysql -p create mantis
+     # mysql -umysql -p mantis < /usr/share/mantis/sql/db_generate.sql
+ 
+-2) Edit file /etc/mantis/config.php
++2) Edit file:
++   /etc/mantis/config.php
+ 
+ 3) Check configuration:
+     http://<domain>/mantis/admin/check.php
+--- ./PLD_Install_PL.txt~	2004-08-20 09:46:41.000000000 +0300
++++ ./PLD_Install_PL.txt	2005-09-24 16:34:26.000000000 +0300
+@@ -1,20 +1,11 @@
+ Czynno¶ci po zainstalowaniu systemu MANTIS w PLD
+ 
+-1) operacje na mysql zwi±zane z u¿ytkownikiem "mysql" (je¿eli potrzeba):
+-    # cd /etc/rc.d/init.d
+-    # ./mysql init
+-    # /usr/bin/mysqladmin -u mysql password 'haslo'
+-    
+-1a) Tworzenie szkieletu bazy danych bugtracker:
+-    # /usr/bin/mysqladmin -umysql -phaslo create bugtracker
+-    # cd /usr/share/mantis/sql
+-    # mysql -umysql -phaslo bugtracker < db_generate.sql
++1) Tworzenie szkieletu bazy danych bugtracker:
++    # mysqladmin -umysql -p create mantis
++    # mysql -umysql -p mantis < /usr/share/mantis/sql/db_generate.sql
+ 
+-UWAGA: po powy¿szych czynno¶ciach dobrze jest wyczysciæ plik w którym 
+-logowane s± polecenia które wykonujemy (np. dla sh plik .history)
+-aby nie mo¿na by³o podejrzeæ hase³ dla mysql
+-    
+-2) Edycja i poprawka pliku /usr/share/mantis/config_inc.php
++2) Edycja i poprawka pliku:
++   /etc/mantis/config.php
+ 
+ 2a) Aby zmieniæ domy¶lny jêzyk angielski na polski przy starcie nale¿y 
+ w pliku config_defaults_inc.php odnale¼æ pole $g_default_language 
