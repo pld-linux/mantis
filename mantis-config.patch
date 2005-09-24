@@ -1,0 +1,37 @@
+--- ./config_defaults_inc.php~	2004-12-11 09:21:52.000000000 +0200
++++ ./config_defaults_inc.php	2005-09-24 16:26:35.921960013 +0300
+@@ -38,9 +38,9 @@
+ 	# set hostname to 'localhost', and db_type to 'mysql'.
+ 	# If you need to supply a port to connect to, set hostname as 'localhost:3306'.
+ 	$g_hostname				= 'localhost';
+-	$g_db_username			= 'root';
++	$g_db_username			= 'mysql';
+ 	$g_db_password			= '';
+-	$g_database_name		= 'bugtracker';
++	$g_database_name		= 'mantis';
+ 	$g_db_type			= 'mysql';
+ 
+ 	############################
+@@ -94,7 +94,7 @@
+ 
+ 	# absolute path to your installation.  Requires trailing / or \
+ 	# Symbolic links are allowed since release 0.17.3
+-	$g_absolute_path		= dirname( __FILE__ ) . DIRECTORY_SEPARATOR;
++	$g_absolute_path		= '/usr/share/mantis' . DIRECTORY_SEPARATOR;
+ 
+ 	# absolute patch to your core files. The default is usually OK,
+ 	# unless you moved the 'core' directory out of your webroot (recommended).
+--- ./config_inc.php.sample	2004-09-12 15:23:36.000000000 +0300
++++ /tmp/config.php	2005-09-24 16:38:01.000000000 +0300
+@@ -29,9 +29,9 @@
+ 
+ 	# set these values to match your setup
+ 	$g_hostname      = "localhost";
+-	$g_db_username   = "root";
++	$g_db_username   = "mysql";
+ 	$g_db_password   = "";
+-	$g_database_name = "bugtracker";
++	$g_database_name = "mantis";
+ 
+ 	# --- email variables -------------
+ 	$g_administrator_email  = 'administrator@example.com';
