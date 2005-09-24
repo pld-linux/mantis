@@ -1,13 +1,15 @@
+# TIP:
+# - After upgrade from version <= 0.18.x mysql database requires upgrade!
 #
-# tip:
-# After upgrade from version <= 0.18.x mysql database requires upgrade!
+# TODO
+# - security http://security.gentoo.org/glsa/glsa-200509-16.xml
 
 Summary:	The Mantis bug tracker
 Summary(pl):	Mantis - system kontroli b³êdów
 Name:		mantis
 # %%define		sub_ver rc1
 Version:	0.19.2
-Release:	1
+Release:	1.4
 License:	GPL
 Group:		Development/Tools
 Source0:	http://dl.sourceforge.net/mantisbt/%{name}-%{version}.tar.gz
@@ -15,25 +17,25 @@ Source0:	http://dl.sourceforge.net/mantisbt/%{name}-%{version}.tar.gz
 Source1:	%{name}-doc-PLD.tar.gz
 Source2:	%{name}.conf
 URL:		http://mantisbt.sourceforge.net/
-Requires:	apache >= 1.3.27-4
-Requires:	apache-mod_dir >= 1.3.27-4
-Requires:	php >= 4.3.1-4
-Requires:	php-mysql >= 4.3.1-4
-Requires:	php-pcre >= 4.3.1-4
-Requires:	mysql >= 3.23.2
-Requires:	mysql-client >= 3.23.56-1
-Requires:	sed
+BuildRequires:	rpmbuild(macros) >= 1.226
+Requires(triggerpostun):	sed >= 4.0
+Requires:	apache >= 1.3.33-2
+Requires:	apache(mod_dir)
+Requires:	php >= 3:4.3.1-4
+Requires:	php-mysql >= 3:4.3.1-4
+Requires:	php-pcre >= 3:4.3.1-4
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_mantisdir	%{_datadir}/%{name}
+%define		_sysconfdir /etc/%{name}
 
 %description
 Mantis is a PHP/MySQL/web based bugtracking system.
 
 %description -l pl
-Mantis jest systemem kontroli b³êdów opartym na interfejsie WWW,
-bazie MySQL oraz PHP.
+Mantis jest systemem kontroli b³êdów opartym na interfejsie WWW, bazie
+MySQL oraz PHP.
 
 %prep
 %setup -q -c -a1
@@ -44,62 +46,91 @@ find . -type f -name .cvsignore | xargs rm -rf
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_mantisdir}/doc,%{_sysconfdir}/httpd}
+install -d $RPM_BUILD_ROOT{%{_mantisdir}/doc,%{_sysconfdir}}
 
 cp -af mantis-%{version}/{*.php,admin,core,css,graphs,images,javascript,lang,sql} $RPM_BUILD_ROOT%{_mantisdir}
 # cp -af mantis-%{version}/doc/faq.* $RPM_BUILD_ROOT%{_mantisdir}/doc/
 
-sed -e 's/root/mysql/g' mantis-%{version}/config_inc.php.sample > $RPM_BUILD_ROOT%{_mantisdir}/config_inc.php
+sed -e 's/root/mysql/g' mantis-%{version}/config_inc.php.sample > $RPM_BUILD_ROOT%{_sysconfdir}/config.php
+ln -s %{_sysconfdir}/config.php $RPM_BUILD_ROOT%{_mantisdir}/config_inc.php
 
-install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/httpd/%{name}.conf
+mv $RPM_BUILD_ROOT{%{_mantisdir}/config_defaults_inc.php,%{_sysconfdir}/config_defaults.php}
+ln -s %{_sysconfdir}/config_defaults.php $RPM_BUILD_ROOT%{_mantisdir}/config_defaults_inc.php
+
+install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
-if [ "$LANG" = "pl_PL" ]; then
-#	sed -e "s/= 'english';/= 'polish';/g" %{_mantisdir}/config_defaults_inc.php > %{_mantisdir}/config_defaults_inc_PLD.php
-#	mv -f %{_mantisdir}/config_defaults_inc_PLD.php %{_mantisdir}/config_defaults_inc.php
-	echo
-	echo "Mantis zapisany..."
-	echo "Wiêcej: /usr/share/doc/mantis-%{version}/PLD_Install_PL.txt.gz"
-	echo
-else
-	echo
-	echo "Mantis loaded..."
-	echo "More: /usr/share/doc/mantis-%{version}/PLD_Install_EN.txt.gz"
-	echo
+if [ "$1" = 1 ]; then
+	# TODO: use banner
+	if [ "$LANG" = "pl_PL" ]; then
+		echo "Wiêcej: "
+		echo " less %{_docdir}/%{name}-%{version}/PLD_Install_EN.txt.gz"
+	else
+		echo "For More information on Mantis on PLD Linux please read:"
+		echo " less %{_docdir}/%{name}-%{version}/PLD_Install_EN.txt.gz"
+	fi
 fi
 
-if [ -f %{_sysconfdir}/httpd/httpd.conf ] && ! grep -q "^Include.*%{name}.conf" %{_sysconfdir}/httpd/httpd.conf; then
-        echo "Include %{_sysconfdir}/httpd/%{name}.conf" >> %{_sysconfdir}/httpd/httpd.conf
-elif [ -d %{_sysconfdir}/httpd/httpd.conf ]; then
-        ln -sf %{_sysconfdir}/httpd/%{name}.conf %{_sysconfdir}/httpd/httpd.conf/99_%{name}.conf
-fi
-if [ -f /var/lock/subsys/httpd ]; then
-        /usr/sbin/apachectl restart 1>&2
+%triggerin -- apache1 >= 1.3.33-2
+%apache_config_install -v 1 -c %{_sysconfdir}/apache.conf
+
+%triggerun -- apache1 >= 1.3.33-2
+%apache_config_uninstall -v 1
+
+%triggerin -- apache >= 2.0.0
+%apache_config_install -v 2 -c %{_sysconfdir}/apache.conf
+
+%triggerun -- apache >= 2.0.0
+%apache_config_uninstall -v 2
+
+%triggerpostun -- %{name} < 0.19.2-1.1
+# migrate from old config location (only apache2, as there was no apache1 support)
+if [ -f /etc/httpd/%{name}.conf.rpmsave ]; then
+	cp -f %{_sysconfdir}/apache.conf{,.rpmnew}
+	mv -f /etc/httpd/%{name}.conf.rpmsave %{_sysconfdir}/apache.conf
+	if [ -f /var/lock/subsys/httpd ]; then
+		/etc/rc.d/init.d/httpd reload 1>&2
+	fi
 fi
 
-%preun
-if [ "$1" = "0" ]; then
-        umask 027
-        if [ -d %{_sysconfdir}/httpd/httpd.conf ]; then
-            rm -f %{_sysconfdir}/httpd/httpd.conf/99_%{name}.conf
-        else
-                grep -v "^Include.*%{name}.conf" %{_sysconfdir}/httpd/httpd.conf > \
-                        %{_sysconfdir}/httpd/httpd.conf.tmp
-                mv -f %{_sysconfdir}/httpd/httpd.conf.tmp %{_sysconfdir}/httpd/httpd.conf
-                if [ -f /var/lock/subsys/httpd ]; then
-                    /usr/sbin/apachectl restart 1>&2
-                fi
-        fi
+# nuke very-old config location
+if [ ! -d /etc/httpd/httpd.conf ]; then
+	sed -i -e "/^Include.*%{name}.conf/d" /etc/httpd/httpd.conf
+	if [ -f /var/lock/subsys/httpd ]; then
+		/etc/rc.d/init.d/httpd reload 1>&2
+	fi
+fi
+
+# place new config location, as trigger puts config only on first install, do it here.
+# apache1
+if [ -d /etc/apache/conf.d ]; then
+	ln -sf %{_sysconfdir}/apache.conf /etc/apache/conf.d/99_%{name}.conf
+	if [ -f /var/lock/subsys/apache ]; then
+		/etc/rc.d/init.d/apache reload 1>&2
+	fi
+fi
+# apache2
+if [ -d /etc/httpd/httpd.conf ]; then
+	ln -sf %{_sysconfdir}/apache.conf /etc/httpd/httpd.conf/99_%{name}.conf
+	if [ -f /var/lock/subsys/httpd ]; then
+		/etc/rc.d/init.d/httpd reload 1>&2
+	fi
 fi
 
 %files
 %defattr(644,root,root,755)
 %doc mantis-%{version}/doc/{CREDITS,CUSTOMIZATION,ChangeLog,INSTALL,README,UPGRADING}
 %doc PLD*
+%attr(750,root,http) %dir %{_sysconfdir}
+%attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/config.php
+%attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/config_defaults.php
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/apache.conf
 %dir %{_mantisdir}
+%{_mantisdir}/config_inc.php
+%{_mantisdir}/config_defaults_inc.php
 %{_mantisdir}/admin
 %{_mantisdir}/core
 %{_mantisdir}/css
@@ -115,7 +146,6 @@ fi
 %{_mantisdir}/changelog_page*
 %{_mantisdir}/core.*
 %{_mantisdir}/csv*
-%{_mantisdir}/file_down*
 %{_mantisdir}/file*
 %{_mantisdir}/history*
 %{_mantisdir}/index*
@@ -133,7 +163,3 @@ fi
 %{_mantisdir}/sum*
 %{_mantisdir}/veri*
 %{_mantisdir}/view*
-
-%config(noreplace) %{_mantisdir}/config_inc.php
-%config(noreplace) %{_mantisdir}/config_defaults_inc.php
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/httpd/%{name}.conf
