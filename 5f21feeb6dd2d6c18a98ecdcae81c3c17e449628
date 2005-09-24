@@ -1,0 +1,2 @@
+- s@/etc@%{_sysconfdir}@g
+- description cosmetics
