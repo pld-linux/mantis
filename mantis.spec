@@ -1,14 +1,11 @@
 # TIP:
 # - After upgrade from version <= 0.18.x mysql database requires upgrade!
 #
-# TODO
-# - put admin/ dir to separate -setup package which can be installed only at first time install
-
 Summary:	The Mantis bug tracker
 Summary(pl):	Mantis - system kontroli b³êdów
 Name:		mantis
 Version:	0.19.2
-Release:	1.9
+Release:	1.11
 License:	GPL
 Group:		Development/Tools
 Source0:	http://dl.sourceforge.net/mantisbt/%{name}-%{version}.tar.gz
@@ -38,6 +35,22 @@ Mantis is a PHP/MySQL/web based bugtracking system.
 %description -l pl
 Mantis jest systemem kontroli b³êdów opartym na interfejsie WWW, bazie
 MySQL oraz PHP.
+
+%package setup
+Summary:	Mantis setup package
+Summary(pl):	Pakiet do wstêpnej konfiguracji Mantis
+Group:		Applications/WWW
+PreReq:		%{name} = %{epoch}:%{version}-%{release}
+
+%description setup
+Install this package to configure initial Mantis installation. You
+should uninstall this package when you're done, as it considered
+insecure to keep the setup files in place.
+
+%description setup -l pl
+Ten pakiet nale¿y zainstalowaæ w celu wstêpnej konfiguracji Mantis po
+pierwszej instalacji. Potem nale¿y go odinstalowaæ, jako ¿e
+pozostawienie plików instalacyjnych mog³oby byæ niebezpieczne.
 
 %prep
 %setup -q -a1
@@ -69,14 +82,20 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 if [ "$1" = 1 ]; then
-	# TODO: use banner instead
-	if [ "$LANG" = "pl_PL" ]; then
-		echo "Aby uzyskaæ wiêcej informacji o Mantisie w Linuksie PLD przeczytaj: "
-		echo " less %{_docdir}/%{name}-%{version}/PLD_Install_PL.txt.gz"
-	else
-		echo "For More information on Mantis on PLD Linux please read:"
-		echo " less %{_docdir}/%{name}-%{version}/PLD_Install_EN.txt.gz"
-	fi
+%banner -e %{name} <<EOF
+Install %{name}-setup if you need to setup initial Mantis
+configuration or configure mantis.
+EOF
+fi
+
+%post setup
+# TODO: use banner instead
+if [ "$LANG" = "pl_PL" ]; then
+	echo "Aby uzyskaæ wiêcej informacji o Mantisie w Linuksie PLD przeczytaj: "
+	echo " less %{_docdir}/%{name}-setup-%{version}/PLD_Install_PL.txt.gz"
+else
+	echo "For More information on Mantis on PLD Linux please read:"
+	echo " less %{_docdir}/%{name}-setup-%{version}/PLD_Install_EN.txt.gz"
 fi
 
 %triggerin -- apache1 >= 1.3.33-2
@@ -128,7 +147,6 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc doc/{CREDITS,CUSTOMIZATION,ChangeLog,INSTALL,README,UPGRADING}
-%doc PLD*
 %attr(750,root,http) %dir %{_sysconfdir}
 %attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/config.php
 %attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/config_defaults.php
@@ -136,14 +154,12 @@ fi
 %dir %{_mantisdir}
 %{_mantisdir}/config_inc.php
 %{_mantisdir}/config_defaults_inc.php
-%{_mantisdir}/admin
 %{_mantisdir}/core
 %{_mantisdir}/css
 %{_mantisdir}/graphs
 %{_mantisdir}/images
 %{_mantisdir}/javascript
 %{_mantisdir}/lang
-%{_mantisdir}/sql
 %{_mantisdir}/doc
 %{_mantisdir}/adm_*
 %{_mantisdir}/account*
@@ -168,3 +184,9 @@ fi
 %{_mantisdir}/sum*
 %{_mantisdir}/veri*
 %{_mantisdir}/view*
+
+%files setup
+%defattr(644,root,root,755)
+%doc PLD*
+%{_mantisdir}/admin
+%{_mantisdir}/sql
