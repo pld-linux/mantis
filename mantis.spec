@@ -2,14 +2,13 @@
 # - After upgrade from version <= 0.18.x mysql database requires upgrade!
 #
 # TODO
-# - security http://security.gentoo.org/glsa/glsa-200509-16.xml
 # - put admin/ dir to separate -setup package which can be installed only at first time install
 
 Summary:	The Mantis bug tracker
 Summary(pl):	Mantis - system kontroli b³êdów
 Name:		mantis
 Version:	0.19.2
-Release:	1.5
+Release:	1.9
 License:	GPL
 Group:		Development/Tools
 Source0:	http://dl.sourceforge.net/mantisbt/%{name}-%{version}.tar.gz
@@ -17,6 +16,8 @@ Source0:	http://dl.sourceforge.net/mantisbt/%{name}-%{version}.tar.gz
 Source1:	%{name}-doc-PLD.tar.gz
 Source2:	%{name}.conf
 Patch0:		%{name}-debian.patch
+Patch1:		%{name}-config.patch
+Patch2:		%{name}-doc.patch
 URL:		http://mantisbt.sourceforge.net/
 BuildRequires:	rpmbuild(macros) >= 1.226
 Requires(triggerpostun):	sed >= 4.0
@@ -41,6 +42,8 @@ MySQL oraz PHP.
 %prep
 %setup -q -a1
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
 find . -type d -name CVS | xargs rm -rf
 find . -type f -name .cvsignore | xargs rm -rf
 find '(' -name '*~' -o -name '*.orig' ')' | xargs -r rm -v
@@ -53,7 +56,7 @@ install -d $RPM_BUILD_ROOT{%{_mantisdir}/doc,%{_sysconfdir}}
 
 cp -af {*.php,admin,core,css,graphs,images,javascript,lang,sql} $RPM_BUILD_ROOT%{_mantisdir}
 
-sed -e 's/root/mysql/g' config_inc.php.sample > $RPM_BUILD_ROOT%{_sysconfdir}/config.php
+install config_inc.php.sample $RPM_BUILD_ROOT%{_sysconfdir}/config.php
 ln -s %{_sysconfdir}/config.php $RPM_BUILD_ROOT%{_mantisdir}/config_inc.php
 
 mv $RPM_BUILD_ROOT{%{_mantisdir}/config_defaults_inc.php,%{_sysconfdir}/config_defaults.php}
@@ -66,10 +69,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 if [ "$1" = 1 ]; then
-	# TODO: use banner
+	# TODO: use banner instead
 	if [ "$LANG" = "pl_PL" ]; then
-		echo "Wiêcej: "
-		echo " less %{_docdir}/%{name}-%{version}/PLD_Install_EN.txt.gz"
+		echo "Aby uzyskaæ wiêcej informacji o Mantisie w Linuksie PLD przeczytaj: "
+		echo " less %{_docdir}/%{name}-%{version}/PLD_Install_PL.txt.gz"
 	else
 		echo "For More information on Mantis on PLD Linux please read:"
 		echo " less %{_docdir}/%{name}-%{version}/PLD_Install_EN.txt.gz"
