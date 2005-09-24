@@ -3,19 +3,20 @@
 #
 # TODO
 # - security http://security.gentoo.org/glsa/glsa-200509-16.xml
+# - put admin/ dir to separate -setup package which can be installed only at first time install
 
 Summary:	The Mantis bug tracker
 Summary(pl):	Mantis - system kontroli b³êdów
 Name:		mantis
-# %%define		sub_ver rc1
 Version:	0.19.2
-Release:	1.4
+Release:	1.5
 License:	GPL
 Group:		Development/Tools
 Source0:	http://dl.sourceforge.net/mantisbt/%{name}-%{version}.tar.gz
 # Source0-md5:	042c42c6de3bc536181391c1e9b25db3
 Source1:	%{name}-doc-PLD.tar.gz
 Source2:	%{name}.conf
+Patch0:		%{name}-debian.patch
 URL:		http://mantisbt.sourceforge.net/
 BuildRequires:	rpmbuild(macros) >= 1.226
 Requires(triggerpostun):	sed >= 4.0
@@ -38,9 +39,11 @@ Mantis jest systemem kontroli b³êdów opartym na interfejsie WWW, bazie
 MySQL oraz PHP.
 
 %prep
-%setup -q -c -a1
+%setup -q -a1
+%patch0 -p1
 find . -type d -name CVS | xargs rm -rf
 find . -type f -name .cvsignore | xargs rm -rf
+find '(' -name '*~' -o -name '*.orig' ')' | xargs -r rm -v
 
 %build
 
@@ -48,10 +51,9 @@ find . -type f -name .cvsignore | xargs rm -rf
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_mantisdir}/doc,%{_sysconfdir}}
 
-cp -af mantis-%{version}/{*.php,admin,core,css,graphs,images,javascript,lang,sql} $RPM_BUILD_ROOT%{_mantisdir}
-# cp -af mantis-%{version}/doc/faq.* $RPM_BUILD_ROOT%{_mantisdir}/doc/
+cp -af {*.php,admin,core,css,graphs,images,javascript,lang,sql} $RPM_BUILD_ROOT%{_mantisdir}
 
-sed -e 's/root/mysql/g' mantis-%{version}/config_inc.php.sample > $RPM_BUILD_ROOT%{_sysconfdir}/config.php
+sed -e 's/root/mysql/g' config_inc.php.sample > $RPM_BUILD_ROOT%{_sysconfdir}/config.php
 ln -s %{_sysconfdir}/config.php $RPM_BUILD_ROOT%{_mantisdir}/config_inc.php
 
 mv $RPM_BUILD_ROOT{%{_mantisdir}/config_defaults_inc.php,%{_sysconfdir}/config_defaults.php}
@@ -122,7 +124,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc mantis-%{version}/doc/{CREDITS,CUSTOMIZATION,ChangeLog,INSTALL,README,UPGRADING}
+%doc doc/{CREDITS,CUSTOMIZATION,ChangeLog,INSTALL,README,UPGRADING}
 %doc PLD*
 %attr(750,root,http) %dir %{_sysconfdir}
 %attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/config.php
