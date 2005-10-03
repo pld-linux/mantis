@@ -38,7 +38,7 @@ MySQL oraz PHP.
 
 %package setup
 Summary:	Mantis setup package
-Summary(pl):	Pakiet do wstêpnej konfiguracji Mantis
+Summary(pl):	Pakiet do wstêpnej konfiguracji Mantisa
 Group:		Applications/WWW
 PreReq:		%{name} = %{epoch}:%{version}-%{release}
 
@@ -48,7 +48,7 @@ should uninstall this package when you're done, as it considered
 insecure to keep the setup files in place.
 
 %description setup -l pl
-Ten pakiet nale¿y zainstalowaæ w celu wstêpnej konfiguracji Mantis po
+Ten pakiet nale¿y zainstalowaæ w celu wstêpnej konfiguracji Mantisa po
 pierwszej instalacji. Potem nale¿y go odinstalowaæ, jako ¿e
 pozostawienie plików instalacyjnych mog³oby byæ niebezpieczne.
 
