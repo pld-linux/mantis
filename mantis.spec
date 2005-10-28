@@ -4,16 +4,15 @@ Summary:	The Mantis bug tracker
 Summary(pl):	Mantis - system kontroli b³êdów
 Name:		mantis
 Version:	0.19.3
-Release:	1
+Release:	2
 License:	GPL
 Group:		Development/Tools
 Source0:	http://dl.sourceforge.net/mantisbt/%{name}-%{version}.tar.gz
 # Source0-md5:	b3c1d9f6f66bc5e7e236cc9449aa3ced
 Source1:	%{name}-doc-PLD.tar.gz
 Source2:	%{name}.conf
-Patch0:		%{name}-debian.patch
-Patch1:		%{name}-config.patch
-Patch2:		%{name}-doc.patch
+Patch0:		%{name}-config.patch
+Patch1:		%{name}-doc.patch
 URL:		http://mantisbt.sourceforge.net/
 BuildRequires:	rpmbuild(macros) >= 1.226
 Requires(triggerpostun):	sed >= 4.0
@@ -55,7 +54,6 @@ pozostawienie plików instalacyjnych mog³oby byæ niebezpieczne.
 %setup -q -a1
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 find . -type d -name CVS | xargs rm -rf
 find . -type f -name .cvsignore | xargs rm -rf
 find '(' -name '*~' -o -name '*.orig' ')' | xargs -r rm -v
