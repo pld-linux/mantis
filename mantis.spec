@@ -1,15 +1,14 @@
 # TIP:
 # - After upgrade from version <= 0.18.x mysql database requires upgrade!
-#
 Summary:	The Mantis bug tracker
 Summary(pl):	Mantis - system kontroli b³êdów
 Name:		mantis
-Version:	0.19.2
-Release:	1.11
+Version:	0.19.3
+Release:	1
 License:	GPL
 Group:		Development/Tools
 Source0:	http://dl.sourceforge.net/mantisbt/%{name}-%{version}.tar.gz
-# Source0-md5:	042c42c6de3bc536181391c1e9b25db3
+# Source0-md5:	b3c1d9f6f66bc5e7e236cc9449aa3ced
 Source1:	%{name}-doc-PLD.tar.gz
 Source2:	%{name}.conf
 Patch0:		%{name}-debian.patch
