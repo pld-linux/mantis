@@ -16,11 +16,12 @@ Patch1:		%{name}-doc.patch
 URL:		http://mantisbt.sourceforge.net/
 BuildRequires:	rpmbuild(macros) >= 1.226
 Requires(triggerpostun):	sed >= 4.0
-Requires:	apache >= 1.3.33-2
+Requires:	webserver = apache
 Requires:	apache(mod_dir)
 Requires:	php >= 3:4.3.1-4
 Requires:	php-mysql >= 3:4.3.1-4
 Requires:	php-pcre >= 3:4.3.1-4
+Conflicts:	apache1 < 1.3.33-2
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
