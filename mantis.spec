@@ -4,7 +4,7 @@ Summary:	The Mantis bug tracker
 Summary(pl):	Mantis - system kontroli b³êdów
 Name:		mantis
 Version:	0.19.3
-Release:	2
+Release:	3
 License:	GPL
 Group:		Development/Tools
 Source0:	http://dl.sourceforge.net/mantisbt/%{name}-%{version}.tar.gz
@@ -14,19 +14,21 @@ Source2:	%{name}.conf
 Patch0:		%{name}-config.patch
 Patch1:		%{name}-doc.patch
 URL:		http://mantisbt.sourceforge.net/
-BuildRequires:	rpmbuild(macros) >= 1.226
+BuildRequires:	rpmbuild(macros) >= 1.264
 Requires(triggerpostun):	sed >= 4.0
+Requires:	webapps
 Requires:	webserver = apache
 Requires:	apache(mod_dir)
 Requires:	php >= 3:4.3.1-4
 Requires:	php-mysql >= 3:4.3.1-4
 Requires:	php-pcre >= 3:4.3.1-4
-Conflicts:	apache1 < 1.3.33-2
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		_mantisdir	%{_datadir}/%{name}
-%define		_sysconfdir /etc/%{name}
+%define		_appdir		%{_datadir}/%{name}
+%define		_webapps	/etc/webapps
+%define		_webapp		%{name}
+%define		_sysconfdir	%{_webapps}/%{_webapp}
 
 %description
 Mantis is a PHP/MySQL/web based bugtracking system.
@@ -63,17 +65,18 @@ find '(' -name '*~' -o -name '*.orig' ')' | xargs -r rm -v
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_mantisdir}/doc,%{_sysconfdir}}
+install -d $RPM_BUILD_ROOT{%{_appdir}/doc,%{_sysconfdir}}
 
-cp -af {*.php,admin,core,css,graphs,images,javascript,lang,sql} $RPM_BUILD_ROOT%{_mantisdir}
+cp -af {*.php,admin,core,css,graphs,images,javascript,lang,sql} $RPM_BUILD_ROOT%{_appdir}
 
 install config_inc.php.sample $RPM_BUILD_ROOT%{_sysconfdir}/config.php
-ln -s %{_sysconfdir}/config.php $RPM_BUILD_ROOT%{_mantisdir}/config_inc.php
+ln -s %{_sysconfdir}/config.php $RPM_BUILD_ROOT%{_appdir}/config_inc.php
 
-mv $RPM_BUILD_ROOT{%{_mantisdir}/config_defaults_inc.php,%{_sysconfdir}/config_defaults.php}
-ln -s %{_sysconfdir}/config_defaults.php $RPM_BUILD_ROOT%{_mantisdir}/config_defaults_inc.php
+mv $RPM_BUILD_ROOT{%{_appdir}/config_defaults_inc.php,%{_sysconfdir}/config_defaults.php}
+ln -s %{_sysconfdir}/config_defaults.php $RPM_BUILD_ROOT%{_appdir}/config_defaults_inc.php
 
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
+install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/httpd.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -96,95 +99,135 @@ else
 	echo " less %{_docdir}/%{name}-setup-%{version}/PLD_Install_EN.txt.gz"
 fi
 
-%triggerin -- apache1 >= 1.3.33-2
-%apache_config_install -v 1 -c %{_sysconfdir}/apache.conf
+%triggerin -- apache1
+%webapp_register apache %{_webapp}
 
-%triggerun -- apache1 >= 1.3.33-2
-%apache_config_uninstall -v 1
+%triggerun -- apache1
+%webapp_unregister apache %{_webapp}
 
 %triggerin -- apache >= 2.0.0
-%apache_config_install -v 2 -c %{_sysconfdir}/apache.conf
+%webapp_register httpd %{_webapp}
 
 %triggerun -- apache >= 2.0.0
-%apache_config_uninstall -v 2
+%webapp_unregister httpd %{_webapp}
 
-%triggerpostun -- %{name} < 0.19.2-1.1
-# migrate from old config location (only apache2, as there was no apache1 support)
-if [ -f /etc/httpd/%{name}.conf.rpmsave ]; then
-	cp -f %{_sysconfdir}/apache.conf{,.rpmnew}
-	mv -f /etc/httpd/%{name}.conf.rpmsave %{_sysconfdir}/apache.conf
-	if [ -f /var/lock/subsys/httpd ]; then
-		/etc/rc.d/init.d/httpd reload 1>&2
+%triggerpostun -- %{name} < 0.19.3-2.1
+# rescue app configs.
+for i in config.php config_defaults.php; do
+	if [ -f /etc/%{name}/$i.rpmsave ]; then
+		mv -f %{_sysconfdir}/$i{,.rpmnew}
+		mv -f /etc/%{name}/$i.rpmsave %{_sysconfdir}/$i
 	fi
-fi
+done
 
-# nuke very-old config location
-if [ ! -d /etc/httpd/httpd.conf ]; then
+# nuke very-old config location (this mostly for Ra)
+if [ -f /etc/httpd/httpd.conf ]; then
 	sed -i -e "/^Include.*%{name}.conf/d" /etc/httpd/httpd.conf
+	/usr/sbin/webapp register httpd %{_webapp}
+	httpd_reload=1
+fi
+
+# migrate from httpd (apache2) config dir
+if [ -f /etc/httpd/%{name}.conf.rpmsave ]; then
+	cp -f %{_sysconfdir}/httpd.conf{,.rpmnew}
+	mv -f /etc/httpd/%{name}.conf.rpmsave %{_sysconfdir}/httpd.conf
+	/usr/sbin/webapp register httpd %{_webapp}
+	httpd_reload=1
+fi
+
+# migrate from apache-config macros
+if [ -f /etc/%{name}/apache.conf.rpmsave ]; then
+	if [ -d /etc/apache/webapps.d ]; then
+		cp -f %{_sysconfdir}/apache.conf{,.rpmnew}
+		cp -f /etc/%{name}/apache.conf.rpmsave %{_sysconfdir}/apache.conf
+	fi
+
+	if [ -d /etc/httpd/webapps.d ]; then
+		cp -f %{_sysconfdir}/httpd.conf{,.rpmnew}
+		cp -f /etc/%{name}/apache.conf.rpmsave %{_sysconfdir}/httpd.conf
+	fi
+	rm -f /etc/%{name}/apache.conf.rpmsave
+fi
+
+# migrating from earlier apache-config?
+if [ -L /etc/apache/conf.d/99_%{name}.conf ] || [ -L /etc/httpd/httpd.conf/99_%{name}.conf ]; then
+	if [ -L /etc/apache/conf.d/99_%{name}.conf ]; then
+		rm -f /etc/apache/conf.d/99_%{name}.conf
+		/usr/sbin/webapp register apache %{_webapp}
+		apache_reload=1
+	fi
+	if [ -L /etc/httpd/httpd.conf/99_%{name}.conf ]; then
+		rm -f /etc/httpd/httpd.conf/99_%{name}.conf
+		/usr/sbin/webapp register httpd %{_webapp}
+		httpd_reload=1
+	fi
+else
+	# no earlier registration. assume migration from Ra
+	if [ -d /etc/apache/webapps.d ]; then
+		/usr/sbin/webapp register apache %{_webapp}
+		apache_reload=1
+	fi
+	if [ -d /etc/httpd/webapps.d ]; then
+		/usr/sbin/webapp register httpd %{_webapp}
+		httpd_reload=1
+	fi
+fi
+
+if [ "$httpd_reload" ]; then
 	if [ -f /var/lock/subsys/httpd ]; then
 		/etc/rc.d/init.d/httpd reload 1>&2
 	fi
 fi
-
-# place new config location, as trigger puts config only on first install, do it here.
-# apache1
-if [ -d /etc/apache/conf.d ]; then
-	ln -sf %{_sysconfdir}/apache.conf /etc/apache/conf.d/99_%{name}.conf
+if [ "$apache_reload" ]; then
 	if [ -f /var/lock/subsys/apache ]; then
 		/etc/rc.d/init.d/apache reload 1>&2
-	fi
-fi
-# apache2
-if [ -d /etc/httpd/httpd.conf ]; then
-	ln -sf %{_sysconfdir}/apache.conf /etc/httpd/httpd.conf/99_%{name}.conf
-	if [ -f /var/lock/subsys/httpd ]; then
-		/etc/rc.d/init.d/httpd reload 1>&2
 	fi
 fi
 
 %files
 %defattr(644,root,root,755)
 %doc doc/{CREDITS,CUSTOMIZATION,ChangeLog,INSTALL,README,UPGRADING}
-%attr(750,root,http) %dir %{_sysconfdir}
+%dir %attr(750,root,http) %{_sysconfdir}
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/apache.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd.conf
 %attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/config.php
 %attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/config_defaults.php
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/apache.conf
-%dir %{_mantisdir}
-%{_mantisdir}/config_inc.php
-%{_mantisdir}/config_defaults_inc.php
-%{_mantisdir}/core
-%{_mantisdir}/css
-%{_mantisdir}/graphs
-%{_mantisdir}/images
-%{_mantisdir}/javascript
-%{_mantisdir}/lang
-%{_mantisdir}/doc
-%{_mantisdir}/adm_*
-%{_mantisdir}/account*
-%{_mantisdir}/bug*
-%{_mantisdir}/changelog_page*
-%{_mantisdir}/core.*
-%{_mantisdir}/csv*
-%{_mantisdir}/file*
-%{_mantisdir}/history*
-%{_mantisdir}/index*
-%{_mantisdir}/jump*
-%{_mantisdir}/lo*
-%{_mantisdir}/ma*
-%{_mantisdir}/me*
-%{_mantisdir}/my*
-%{_mantisdir}/news*
-%{_mantisdir}/print*
-%{_mantisdir}/proj*
-%{_mantisdir}/query*
-%{_mantisdir}/set*
-%{_mantisdir}/sig*
-%{_mantisdir}/sum*
-%{_mantisdir}/veri*
-%{_mantisdir}/view*
+%dir %{_appdir}
+%{_appdir}/config_inc.php
+%{_appdir}/config_defaults_inc.php
+%{_appdir}/core
+%{_appdir}/css
+%{_appdir}/graphs
+%{_appdir}/images
+%{_appdir}/javascript
+%{_appdir}/lang
+%{_appdir}/doc
+%{_appdir}/adm_*
+%{_appdir}/account*
+%{_appdir}/bug*
+%{_appdir}/changelog_page*
+%{_appdir}/core.*
+%{_appdir}/csv*
+%{_appdir}/file*
+%{_appdir}/history*
+%{_appdir}/index*
+%{_appdir}/jump*
+%{_appdir}/lo*
+%{_appdir}/ma*
+%{_appdir}/me*
+%{_appdir}/my*
+%{_appdir}/news*
+%{_appdir}/print*
+%{_appdir}/proj*
+%{_appdir}/query*
+%{_appdir}/set*
+%{_appdir}/sig*
+%{_appdir}/sum*
+%{_appdir}/veri*
+%{_appdir}/view*
 
 %files setup
 %defattr(644,root,root,755)
 %doc PLD*
-%{_mantisdir}/admin
-%{_mantisdir}/sql
+%{_appdir}/admin
+%{_appdir}/sql
