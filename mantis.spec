@@ -15,6 +15,7 @@ Patch0:		%{name}-config.patch
 Patch1:		%{name}-doc.patch
 URL:		http://mantisbt.sourceforge.net/
 BuildRequires:	rpmbuild(macros) >= 1.264
+BuildRequires:	sed >= 4.0
 Requires(triggerpostun):	sed >= 4.0
 Requires:	webapps
 Requires:	webserver = apache
@@ -57,6 +58,7 @@ pozostawienie plików instalacyjnych mog³oby byæ niebezpieczne.
 %setup -q -a1
 %patch0 -p1
 %patch1 -p1
+sed -i -e '1s,#!.*bin/php,#!%{_bindir}/php,' core/checkin.php
 find . -type d -name CVS | xargs rm -rf
 find . -type f -name .cvsignore | xargs rm -rf
 find '(' -name '*~' -o -name '*.orig' ')' | xargs -r rm -v
@@ -68,8 +70,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_appdir}/doc,%{_sysconfdir}}
 
 cp -af {*.php,admin,core,css,graphs,images,javascript,lang,sql} $RPM_BUILD_ROOT%{_appdir}
-
-install config_inc.php.sample $RPM_BUILD_ROOT%{_sysconfdir}/config.php
+cp -a config_inc.php.sample $RPM_BUILD_ROOT%{_sysconfdir}/config.php
 ln -s %{_sysconfdir}/config.php $RPM_BUILD_ROOT%{_appdir}/config_inc.php
 
 mv $RPM_BUILD_ROOT{%{_appdir}/config_defaults_inc.php,%{_sysconfdir}/config_defaults.php}
