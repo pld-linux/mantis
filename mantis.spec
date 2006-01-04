@@ -4,7 +4,7 @@ Summary:	The Mantis bug tracker
 Summary(pl):	Mantis - system kontroli b³êdów
 Name:		mantis
 Version:	0.19.4
-Release:	1
+Release:	2
 License:	GPL
 Group:		Development/Tools
 Source0:	http://dl.sourceforge.net/mantisbt/%{name}-%{version}.tar.gz
@@ -14,15 +14,15 @@ Source2:	%{name}.conf
 Patch0:		%{name}-config.patch
 Patch1:		%{name}-doc.patch
 URL:		http://mantisbt.sourceforge.net/
-BuildRequires:	rpmbuild(macros) >= 1.264
+BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	sed >= 4.0
 Requires(triggerpostun):	sed >= 4.0
-Requires:	webapps
-Requires:	webserver = apache
 Requires:	apache(mod_dir)
 Requires:	php >= 3:4.3.1-4
 Requires:	php-mysql >= 3:4.3.1-4
 Requires:	php-pcre >= 3:4.3.1-4
+Requires:	webapps
+Requires:	webserver = apache
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -42,7 +42,7 @@ MySQL oraz PHP.
 Summary:	Mantis setup package
 Summary(pl):	Pakiet do wstêpnej konfiguracji Mantisa
 Group:		Applications/WWW
-PreReq:		%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description setup
 Install this package to configure initial Mantis installation. You
@@ -175,14 +175,10 @@ else
 fi
 
 if [ "$httpd_reload" ]; then
-	if [ -f /var/lock/subsys/httpd ]; then
-		/etc/rc.d/init.d/httpd reload 1>&2
-	fi
+	%service httpd reload
 fi
 if [ "$apache_reload" ]; then
-	if [ -f /var/lock/subsys/apache ]; then
-		/etc/rc.d/init.d/apache reload 1>&2
-	fi
+	%service apache reload
 fi
 
 %files
