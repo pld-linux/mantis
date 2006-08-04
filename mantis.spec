@@ -3,12 +3,12 @@
 Summary:	The Mantis bug tracker
 Summary(pl):	Mantis - system kontroli b³êdów
 Name:		mantis
-Version:	0.19.4
-Release:	3
+Version:	1.0.5
+Release:	1
 License:	GPL
 Group:		Development/Tools
-Source0:	http://dl.sourceforge.net/mantisbt/%{name}-%{version}.tar.gz
-# Source0-md5:	6dd7282469f7be4fb2eeaff92942f448
+Source0:	http://dl.sourceforge.net/mantisbt/%{name}_%{version}.tar.gz
+# Source0-md5:	01c5fb87e5ac161a681471573711bcf6
 Source1:	%{name}-doc-PLD.tar.gz
 Source2:	%{name}.conf
 Patch0:		%{name}-config.patch
@@ -55,7 +55,7 @@ pierwszej instalacji. Potem nale¿y go odinstalowaæ, jako ¿e
 pozostawienie plików instalacyjnych mog³oby byæ niebezpieczne.
 
 %prep
-%setup -q -a1
+%setup -q -a1 -n %{name}_%{version}
 %patch0 -p1
 %patch1 -p1
 sed -i -e '1s,#!.*bin/php,#!%{_bindir}/php,' core/checkin.php
@@ -69,7 +69,7 @@ find '(' -name '*~' -o -name '*.orig' ')' | xargs -r rm -v
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_appdir}/doc,%{_sysconfdir}}
 
-cp -af {*.php,admin,core,css,graphs,images,javascript,lang,sql} $RPM_BUILD_ROOT%{_appdir}
+cp -af {*.php,admin,core,css,graphs,images,javascript,lang} $RPM_BUILD_ROOT%{_appdir}
 cp -a config_inc.php.sample $RPM_BUILD_ROOT%{_sysconfdir}/config.php
 ln -s %{_sysconfdir}/config.php $RPM_BUILD_ROOT%{_appdir}/config_inc.php
 
@@ -190,8 +190,10 @@ fi
 %attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/config.php
 %attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/config_defaults.php
 %dir %{_appdir}
-%{_appdir}/config_inc.php
 %{_appdir}/config_defaults_inc.php
+%{_appdir}/config_inc.php
+%{_appdir}/issues_rss.php
+%{_appdir}/return_dynamic_filters.php
 %{_appdir}/core
 %{_appdir}/css
 %{_appdir}/graphs
@@ -227,4 +229,3 @@ fi
 %defattr(644,root,root,755)
 %doc PLD*
 %{_appdir}/admin
-%{_appdir}/sql
