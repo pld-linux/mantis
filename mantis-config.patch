@@ -21,8 +21,8 @@
  
  	# absolute patch to your core files. The default is usually OK,
  	# unless you moved the 'core' directory out of your webroot (recommended).
---- ./config_inc.php.sample	2004-09-12 15:23:36.000000000 +0300
-+++ /tmp/config.php	2005-09-24 16:38:01.000000000 +0300
+--- mantis_1.0.5/config_inc.php.sample~	2006-08-04 04:36:21.128575068 +0300
++++ mantis_1.0.5/config_inc.php.sample	2006-08-04 04:36:47.659169566 +0300
 @@ -29,9 +29,9 @@
  
  	# set these values to match your setup
@@ -32,6 +32,6 @@
  	$g_db_password   = "";
 -	$g_database_name = "bugtracker";
 +	$g_database_name = "mantis";
+ 	$g_db_type       = "mysql";
  
  	# --- email variables -------------
- 	$g_administrator_email  = 'administrator@example.com';
