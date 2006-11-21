@@ -4,7 +4,7 @@ Summary:	The Mantis bug tracker
 Summary(pl):	Mantis - system kontroli b³êdów
 Name:		mantis
 Version:	1.0.5
-Release:	2
+Release:	3
 License:	GPL
 Group:		Development/Tools
 Source0:	http://dl.sourceforge.net/mantisbt/%{name}_%{version}.tar.gz
@@ -18,11 +18,11 @@ BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	sed >= 4.0
 Requires(triggerpostun):	sed >= 4.0
 Requires:	apache(mod_dir)
-Requires:	php >= 3:4.3.1-4
-Requires:	php-mysql >= 3:4.3.1-4
-Requires:	php-pcre >= 3:4.3.1-4
+Requires:	php(mysql)
+Requires:	php(pcre)
 Requires:	webapps
 Requires:	webserver = apache
+Requires:	webserver(php) >= 4.3.1-4
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
