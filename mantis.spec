@@ -1,7 +1,7 @@
 # TIP:
 # - After upgrade from version <= 0.18.x mysql database requires upgrade!
 Summary:	The Mantis bug tracker
-Summary(pl):	Mantis - system kontroli b³êdów
+Summary(pl.UTF-8):   Mantis - system kontroli bÅ‚Ä™dÃ³w
 Name:		mantis
 Version:	1.0.5
 Release:	3
@@ -34,13 +34,13 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 Mantis is a PHP/MySQL/web based bugtracking system.
 
-%description -l pl
-Mantis jest systemem kontroli b³êdów opartym na interfejsie WWW, bazie
+%description -l pl.UTF-8
+Mantis jest systemem kontroli bÅ‚Ä™dÃ³w opartym na interfejsie WWW, bazie
 MySQL oraz PHP.
 
 %package setup
 Summary:	Mantis setup package
-Summary(pl):	Pakiet do wstêpnej konfiguracji Mantisa
+Summary(pl.UTF-8):   Pakiet do wstÄ™pnej konfiguracji Mantisa
 Group:		Applications/WWW
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -49,10 +49,10 @@ Install this package to configure initial Mantis installation. You
 should uninstall this package when you're done, as it considered
 insecure to keep the setup files in place.
 
-%description setup -l pl
-Ten pakiet nale¿y zainstalowaæ w celu wstêpnej konfiguracji Mantisa po
-pierwszej instalacji. Potem nale¿y go odinstalowaæ, jako ¿e
-pozostawienie plików instalacyjnych mog³oby byæ niebezpieczne.
+%description setup -l pl.UTF-8
+Ten pakiet naleÅ¼y zainstalowaÄ‡ w celu wstÄ™pnej konfiguracji Mantisa po
+pierwszej instalacji. Potem naleÅ¼y go odinstalowaÄ‡, jako Å¼e
+pozostawienie plikÃ³w instalacyjnych mogÅ‚oby byÄ‡ niebezpieczne.
 
 %prep
 %setup -q -a1 -n %{name}_%{version}
@@ -93,7 +93,7 @@ fi
 %post setup
 # TODO: use banner instead
 if [ "$LANG" = "pl_PL" ]; then
-	echo "Aby uzyskaæ wiêcej informacji o Mantisie w Linuksie PLD przeczytaj: "
+	echo "Aby uzyskaÄ‡ wiÄ™cej informacji o Mantisie w Linuksie PLD przeczytaj: "
 	echo " less %{_docdir}/%{name}-setup-%{version}/PLD_Install_PL.txt.gz"
 else
 	echo "For More information on Mantis on PLD Linux please read:"
