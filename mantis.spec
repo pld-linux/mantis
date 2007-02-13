@@ -1,7 +1,7 @@
 # TIP:
 # - After upgrade from version <= 0.18.x mysql database requires upgrade!
 Summary:	The Mantis bug tracker
-Summary(pl.UTF-8):   Mantis - system kontroli błędów
+Summary(pl.UTF-8):	Mantis - system kontroli błędów
 Name:		mantis
 Version:	1.0.5
 Release:	3
@@ -40,7 +40,7 @@ MySQL oraz PHP.
 
 %package setup
 Summary:	Mantis setup package
-Summary(pl.UTF-8):   Pakiet do wstępnej konfiguracji Mantisa
+Summary(pl.UTF-8):	Pakiet do wstępnej konfiguracji Mantisa
 Group:		Applications/WWW
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
