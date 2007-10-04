@@ -63,8 +63,6 @@ find . -type d -name CVS | xargs rm -rf
 find . -type f -name .cvsignore | xargs rm -rf
 find '(' -name '*~' -o -name '*.orig' ')' | xargs -r rm -v
 
-%build
-
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_appdir}/doc,%{_sysconfdir}}
