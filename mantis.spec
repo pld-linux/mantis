@@ -3,12 +3,12 @@
 Summary:	The Mantis bug tracker
 Summary(pl.UTF-8):	Mantis - system kontroli błędów
 Name:		mantis
-Version:	1.0.5
-Release:	3
+Version:	1.2.5
+Release:	1
 License:	GPL
 Group:		Development/Tools
-Source0:	http://dl.sourceforge.net/mantisbt/%{name}_%{version}.tar.gz
-# Source0-md5:	01c5fb87e5ac161a681471573711bcf6
+Source0:	http://dl.sourceforge.net/project/mantisbt/mantis-stable/1.2.5/mantisbt-1.2.5.tar.gz
+# Source0-md5:	7f03a48cc62833980e7c74aefd6a530a
 Source1:	%{name}-doc-PLD.tar.gz
 Source2:	%{name}.conf
 Patch0:		%{name}-config.patch
@@ -55,10 +55,9 @@ pierwszej instalacji. Potem należy go odinstalować, jako że
 pozostawienie plików instalacyjnych mogłoby być niebezpieczne.
 
 %prep
-%setup -q -a1 -n %{name}_%{version}
+%setup -q -a1 -n %{name}bt-%{version}
 %patch0 -p1
 %patch1 -p1
-sed -i -e '1s,#!.*bin/php,#!%{_bindir}/php,' core/checkin.php
 find . -type d -name CVS | xargs rm -rf
 find . -type f -name .cvsignore | xargs rm -rf
 find '(' -name '*~' -o -name '*.orig' ')' | xargs -r rm -v
@@ -67,7 +66,7 @@ find '(' -name '*~' -o -name '*.orig' ')' | xargs -r rm -v
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_appdir}/doc,%{_sysconfdir}}
 
-cp -af {*.php,admin,core,css,graphs,images,javascript,lang} $RPM_BUILD_ROOT%{_appdir}
+cp -af {*.php,admin,api,core,css,images,javascript,lang,library,plugins} $RPM_BUILD_ROOT%{_appdir}
 cp -a config_inc.php.sample $RPM_BUILD_ROOT%{_sysconfdir}/config.php
 ln -s %{_sysconfdir}/config.php $RPM_BUILD_ROOT%{_appdir}/config_inc.php
 
@@ -181,20 +180,24 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc doc/{CREDITS,CUSTOMIZATION,ChangeLog,INSTALL,README,UPGRADING}
+%doc doc/{CREDITS,CUSTOMIZATION,INSTALL,RELEASE} doc/en/*.txt
 %dir %attr(750,root,http) %{_sysconfdir}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/apache.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd.conf
 %attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/config.php
 %attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/config_defaults.php
 %dir %{_appdir}
+%{_appdir}/api
+%{_appdir}/billing*.php
+%{_appdir}/browser_search_plugin.php
 %{_appdir}/config_defaults_inc.php
+%{_appdir}/config_filter_defaults_inc.php
 %{_appdir}/config_inc.php
+%{_appdir}/excel_xml_export.php
 %{_appdir}/issues_rss.php
 %{_appdir}/return_dynamic_filters.php
 %{_appdir}/core
 %{_appdir}/css
-%{_appdir}/graphs
 %{_appdir}/images
 %{_appdir}/javascript
 %{_appdir}/lang
@@ -209,19 +212,29 @@ fi
 %{_appdir}/history*
 %{_appdir}/index*
 %{_appdir}/jump*
+%{_appdir}/library
 %{_appdir}/lo*
 %{_appdir}/ma*
 %{_appdir}/me*
 %{_appdir}/my*
 %{_appdir}/news*
+%{_appdir}/permalink_page.php
+%{_appdir}/plugin.php
+%{_appdir}/plugin_file.php
+%{_appdir}/plugins
 %{_appdir}/print*
 %{_appdir}/proj*
 %{_appdir}/query*
+%{_appdir}/roadmap_page.php
+%{_appdir}/search.php
 %{_appdir}/set*
 %{_appdir}/sig*
 %{_appdir}/sum*
+%{_appdir}/tag_*.php
 %{_appdir}/veri*
 %{_appdir}/view*
+%{_appdir}/wiki.php
+%{_appdir}/xmlhttprequest.php
 
 %files setup
 %defattr(644,root,root,755)

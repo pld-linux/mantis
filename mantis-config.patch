@@ -1,37 +1,43 @@
---- ./config_defaults_inc.php~	2004-12-11 09:21:52.000000000 +0200
-+++ ./config_defaults_inc.php	2005-09-24 16:26:35.921960013 +0300
-@@ -38,9 +38,9 @@
- 	# set hostname to 'localhost', and db_type to 'mysql'.
- 	# If you need to supply a port to connect to, set hostname as 'localhost:3306'.
- 	$g_hostname				= 'localhost';
+--- mantisbt-1.2.5/config_defaults_inc.php~	2011-04-05 20:24:17.000000000 +0200
++++ mantisbt-1.2.5/config_defaults_inc.php	2011-04-19 12:48:34.379687628 +0200
+@@ -49,7 +49,7 @@
+ 	 * The default user name is "root".
+ 	 * @global string $g_db_username
+ 	 */
 -	$g_db_username			= 'root';
 +	$g_db_username			= 'mysql';
- 	$g_db_password			= '';
+ 	/**
+ 	 * Password for the specified user name. The default password is empty.
+ 	 * @global string $g_db_password
+@@ -60,7 +60,7 @@
+ 	  * The default database name is "bugtracker".
+ 	  * @global string $g_database_name
+ 	  */
 -	$g_database_name		= 'bugtracker';
 +	$g_database_name		= 'mantis';
- 	$g_db_type			= 'mysql';
  
- 	############################
-@@ -94,7 +94,7 @@
- 
- 	# absolute path to your installation.  Requires trailing / or \
- 	# Symbolic links are allowed since release 0.17.3
+ 	/**
+ 	 * Database Schema Name - used in the case of db2.
+@@ -149,7 +149,7 @@
+ 	 * absolute path to your installation.  Requires trailing / or \
+ 	 * @global string $g_absolute_path
+ 	 */
 -	$g_absolute_path		= dirname( __FILE__ ) . DIRECTORY_SEPARATOR;
 +	$g_absolute_path		= '/usr/share/mantis' . DIRECTORY_SEPARATOR;
  
- 	# absolute patch to your core files. The default is usually OK,
- 	# unless you moved the 'core' directory out of your webroot (recommended).
---- mantis_1.0.5/config_inc.php.sample~	2006-08-04 04:36:21.128575068 +0300
-+++ mantis_1.0.5/config_inc.php.sample	2006-08-04 04:36:47.659169566 +0300
-@@ -29,9 +29,9 @@
+ 	/**
+ 	 * absolute patch to your core files. The default is usually OK,
+--- mantisbt-1.2.5/config_inc.php.sample~	2011-04-05 20:24:17.000000000 +0200
++++ mantisbt-1.2.5/config_inc.php.sample	2011-04-19 12:49:30.938939711 +0200
+@@ -35,9 +35,9 @@
  
- 	# set these values to match your setup
- 	$g_hostname      = "localhost";
--	$g_db_username   = "root";
-+	$g_db_username   = "mysql";
- 	$g_db_password   = "";
--	$g_database_name = "bugtracker";
-+	$g_database_name = "mantis";
- 	$g_db_type       = "mysql";
+ # --- Database Configuration ---
+ $g_hostname      = 'localhost';
+-$g_db_username   = 'mantisdbuser';
++$g_db_username   = 'mysql';
+ $g_db_password   = '';
+-$g_database_name = 'bugtracker';
++$g_database_name = 'mantis';
+ $g_db_type       = 'mysql';
  
- 	# --- email variables -------------
+ # --- Anonymous Access / Signup ---
