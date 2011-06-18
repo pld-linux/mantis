@@ -10,6 +10,7 @@ Group:		Development/Tools
 Source0:	http://dl.sourceforge.net/project/mantisbt/mantis-stable/1.2.5/mantisbt-1.2.5.tar.gz
 # Source0-md5:	7f03a48cc62833980e7c74aefd6a530a
 Source1:	%{name}-doc-PLD.tar.gz
+# Source1-md5:	eaed8c123d8cef118aca7158ec83fed4
 Source2:	%{name}.conf
 Patch0:		%{name}-config.patch
 Patch1:		%{name}-doc.patch
