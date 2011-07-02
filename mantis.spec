@@ -1,6 +1,7 @@
 # TIP:
 # - After upgrade from version <= 0.18.x mysql database requires upgrade!
 Summary:	The Mantis bug tracker
+Summary(hu.UTF-8):	The Mantis hibakövető
 Summary(pl.UTF-8):	Mantis - system kontroli błędów
 Name:		mantis
 Version:	1.2.5
@@ -35,6 +36,9 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 Mantis is a PHP/MySQL/web based bugtracking system.
 
+%description  -l hu.UTF-8
+Mantis egy PHP/MySQL/web alapú hibakövető rendszer.
+
 %description -l pl.UTF-8
 Mantis jest systemem kontroli błędów opartym na interfejsie WWW, bazie
 MySQL oraz PHP.
@@ -49,6 +53,11 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 Install this package to configure initial Mantis installation. You
 should uninstall this package when you're done, as it considered
 insecure to keep the setup files in place.
+
+%description setup -l hu.UTF-8
+Ezen csomag telepítése bekonfigurálja a kezdeti Mantis telepítést. A
+csomagot el kell távolítanod, ha kész vagy, mert nem biztonságos
+fájlok maradnak utána.
 
 %description setup -l pl.UTF-8
 Ten pakiet należy zainstalować w celu wstępnej konfiguracji Mantisa po
@@ -93,6 +102,9 @@ fi
 if [ "$LANG" = "pl_PL" ]; then
 	echo "Aby uzyskać więcej informacji o Mantisie w Linuksie PLD przeczytaj: "
 	echo " less %{_docdir}/%{name}-setup-%{version}/PLD_Install_PL.txt.gz"
+else if [ "$LANG" = "hu_HU"]; then
+	echo "További információért a Mantis-ról PLD Linuxon, kérlek, olvasd el:"
+	echo " less %{_docdir}/%{name}-setup-%{version}/PLD_Install_EN.txt.gz"
 else
 	echo "For More information on Mantis on PLD Linux please read:"
 	echo " less %{_docdir}/%{name}-setup-%{version}/PLD_Install_EN.txt.gz"
