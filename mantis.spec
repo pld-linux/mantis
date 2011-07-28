@@ -102,7 +102,7 @@ fi
 if [ "$LANG" = "pl_PL" ]; then
 	echo "Aby uzyskać więcej informacji o Mantisie w Linuksie PLD przeczytaj: "
 	echo " less %{_docdir}/%{name}-setup-%{version}/PLD_Install_PL.txt.gz"
-else if [ "$LANG" = "hu_HU"]; then
+elif [ "$LANG" = "hu_HU" ]; then
 	echo "További információért a Mantis-ról PLD Linuxon, kérlek, olvasd el:"
 	echo " less %{_docdir}/%{name}-setup-%{version}/PLD_Install_EN.txt.gz"
 else
