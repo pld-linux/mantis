@@ -97,19 +97,6 @@ configuration or configure mantis.
 EOF
 fi
 
-%post setup
-# TODO: use banner instead
-if [ "$LANG" = "pl_PL" ]; then
-	echo "Aby uzyskać więcej informacji o Mantisie w Linuksie PLD przeczytaj: "
-	echo " less %{_docdir}/%{name}-setup-%{version}/PLD_Install_PL.txt.gz"
-elif [ "$LANG" = "hu_HU" ]; then
-	echo "További információért a Mantis-ról PLD Linuxon, kérlek, olvasd el:"
-	echo " less %{_docdir}/%{name}-setup-%{version}/PLD_Install_EN.txt.gz"
-else
-	echo "For More information on Mantis on PLD Linux please read:"
-	echo " less %{_docdir}/%{name}-setup-%{version}/PLD_Install_EN.txt.gz"
-fi
-
 %triggerin -- apache1 < 1.3.37-3, apache1-base
 %webapp_register apache %{_webapp}
 
@@ -251,5 +238,4 @@ fi
 
 %files setup
 %defattr(644,root,root,755)
-%doc PLD*
 %{_appdir}/admin
