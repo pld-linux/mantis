@@ -4,12 +4,12 @@ Summary:	The Mantis bug tracker
 Summary(hu.UTF-8):	The Mantis hibakövető
 Summary(pl.UTF-8):	Mantis - system kontroli błędów
 Name:		mantis
-Version:	1.2.5
+Version:	1.2.6
 Release:	1
 License:	GPL
 Group:		Development/Tools
-Source0:	http://dl.sourceforge.net/project/mantisbt/mantis-stable/1.2.5/mantisbt-1.2.5.tar.gz
-# Source0-md5:	7f03a48cc62833980e7c74aefd6a530a
+Source0:	http://downloads.sourceforge.net/project/mantisbt/mantis-stable/%{version}/%{name}bt-%{version}.tar.gz
+# Source0-md5:	decb8df9b6695d20162faaa0823849fc
 Source1:	%{name}-doc-PLD.tar.gz
 # Source1-md5:	eaed8c123d8cef118aca7158ec83fed4
 Source2:	%{name}.conf
