@@ -1,11 +1,13 @@
 # TIP:
 # - After upgrade from version <= 0.18.x mysql database requires upgrade!
+# TODO:
+# - update mantis-setup pl doc (default user/password)
 Summary:	The Mantis bug tracker
 Summary(hu.UTF-8):	The Mantis hibakövető
 Summary(pl.UTF-8):	Mantis - system kontroli błędów
 Name:		mantis
 Version:	1.2.6
-Release:	1
+Release:	2
 License:	GPL
 Group:		Development/Tools
 Source0:	http://downloads.sourceforge.net/project/mantisbt/mantis-stable/%{version}/%{name}bt-%{version}.tar.gz
@@ -52,12 +54,14 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 %description setup
 Install this package to configure initial Mantis installation. You
 should uninstall this package when you're done, as it considered
-insecure to keep the setup files in place.
+insecure to keep the setup files in place. Default username/password
+after installation: administrator/root
 
 %description setup -l hu.UTF-8
 Ezen csomag telepítése bekonfigurálja a kezdeti Mantis telepítést. A
 csomagot el kell távolítanod, ha kész vagy, mert nem biztonságos
-fájlok maradnak utána.
+fájlok maradnak utána. Alapértelmezett username/password telepítés
+után: administrator/root
 
 %description setup -l pl.UTF-8
 Ten pakiet należy zainstalować w celu wstępnej konfiguracji Mantisa po
@@ -96,6 +100,14 @@ Install %{name}-setup if you need to setup initial Mantis
 configuration or configure mantis.
 EOF
 fi
+
+%post setup
+%banner -e %{name}-setup <<EOF
+After first install the correct user/password:
+administrator/root
+You should change or delete this!
+After install you should uninstall %{name}-setup!
+EOF
 
 %triggerin -- apache1 < 1.3.37-3, apache1-base
 %webapp_register apache %{_webapp}
