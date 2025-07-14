@@ -70,8 +70,8 @@ pozostawienie plików instalacyjnych mogłoby być niebezpieczne.
 
 %prep
 %setup -q -a1 -n %{name}bt-%{version}
-%patch0 -p1
-%patch1 -p1
+%patch -P0 -p1
+%patch -P1 -p1
 find . -type d -name CVS | xargs rm -rf
 find . -type f -name .cvsignore | xargs rm -rf
 find '(' -name '*~' -o -name '*.orig' ')' | xargs -r rm -v
